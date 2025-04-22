@@ -31,7 +31,23 @@ A RESTful API for a Bookstore application built with Java and JAX-RS. Supports C
 
 ## 📁 Project Structure
 
-src/ │ ├── resources/ │ ├── BookResource.java │ ├── AuthorResource.java │ ├── CustomerResource.java │ ├── CartResource.java │ └── OrderResource.java │ ├── models/ │ ├── Book.java │ ├── Author.java │ ├── Customer.java │ └── Order.java │ ├── exceptions/ │ ├── BookNotFoundException.java │ ├── ExceptionMapperConfig.java │ └── ... │ └── Main.java
+src/ │ 
+├── resources/ 
+  │ ├── BookResource.java 
+  │ ├── AuthorResource.java 
+  │ ├── CustomerResource.java
+  │ ├── CartResource.java 
+  │ └── OrderResource.java 
+│ ├── models/ 
+  │ ├── Book.java 
+  │ ├── Author.java 
+  │ ├── Customer.java
+  │ └── Order.java 
+│ ├── exceptions/
+  │ ├── BookNotFoundException.java
+  │ ├── ExceptionMapperConfig.java 
+  │ └── ... 
+│ └── Main.java
 
 
 ---

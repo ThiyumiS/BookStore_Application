@@ -2,10 +2,12 @@ package com.BookStore.Application.Services;
 
 import com.BookStore.Application.Exceptions.AuthorNotFoundException;
 import com.BookStore.Application.Model.Author;
+import com.BookStore.Application.Model.Book;
 import com.BookStore.Application.Storage.Storage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AuthorService {
     
@@ -28,6 +30,24 @@ public class AuthorService {
             throw new AuthorNotFoundException("Author not found with ID: " + id);
         }
         return Storage.getAuthors().get(id);
+    }
+
+    /**
+     * Get all books written by a specific author
+     * @param authorId The ID of the author
+     * @return List of books by the author
+     * @throws AuthorNotFoundException if author doesn't exist
+     */
+    public List<Book> getBooksByAuthorId(int authorId) {
+        // First verify author exists
+        if (!Storage.getAuthors().containsKey(authorId)) {
+            throw new AuthorNotFoundException("Author not found with ID: " + authorId);
+        }
+
+        // Return all books that have this author ID
+        return Storage.getBooks().values().stream()
+                .filter(book -> book.getAuthorId() == authorId)
+                .collect(Collectors.toList());
     }
     
     /**

@@ -2,6 +2,7 @@ package com.BookStore.Application.Resources;
 
 import com.BookStore.Application.Exceptions.AuthorNotFoundException;
 import com.BookStore.Application.Model.Author;
+import com.BookStore.Application.Model.Book;
 import com.BookStore.Application.Services.AuthorService;
 
 import jakarta.ws.rs.*;
@@ -47,7 +48,27 @@ public class AuthorResource {
                     .build();
         }
     }
-    
+
+
+    /**
+     * Get all books by a specific author
+     * @param id Author ID
+     * @return List of books written by the specified author
+     */
+    @GET
+    @Path("/{id}/books")
+    public Response getBooksByAuthorId(@PathParam("id") int id) {
+        try {
+            List<Book> books = authorService.getBooksByAuthorId(id);
+            return Response.ok(books).build();
+        } catch (AuthorNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Author not found with ID: " + id)
+                    .build();
+        }
+    }
+
+
     /**
      * Create a new author
      * @param author Author object from request body

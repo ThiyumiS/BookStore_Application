@@ -210,4 +210,8 @@ public class Book {
     public int getAuthorId() {
         return authorId;
     }
+
+    public void setAuthorId(int authorId) {
+        this.authorId = authorId;
+    }
 }

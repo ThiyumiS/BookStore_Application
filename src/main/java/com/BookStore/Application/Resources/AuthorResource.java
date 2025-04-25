@@ -44,7 +44,7 @@ public class AuthorResource {
             return Response.ok(author).build();
         } catch (AuthorNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Author not found with ID: " + id)
+                    .entity("[MESSAGE] Author not found with ID: " + id)
                     .build();
         }
     }
@@ -63,7 +63,7 @@ public class AuthorResource {
             return Response.ok(books).build();
         } catch (AuthorNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Author not found with ID: " + id)
+                    .entity("[MESSAGE] Author not found with ID: " + id)
                     .build();
         }
     }

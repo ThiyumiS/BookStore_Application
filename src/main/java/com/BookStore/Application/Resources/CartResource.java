@@ -47,11 +47,11 @@ public class CartResource {
                 .build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                .entity("Book not found: " + e.getMessage())
+                .entity("[MESSAGE] Book not found: " + e.getMessage())
                 .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("Error adding book to cart: " + e.getMessage())
+                .entity("[MESSAGE] Error adding book to cart: " + e.getMessage())
                 .build();
         }
     }
@@ -73,11 +73,11 @@ public class CartResource {
                 .build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                .entity("Book not found: " + e.getMessage())
+                .entity("[MESSAGE] Book not found: " + e.getMessage())
                 .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("Error updating book quantity: " + e.getMessage())
+                .entity("[MESSAGE] Error updating book quantity: " + e.getMessage())
                 .build();
         }
     }
@@ -96,11 +96,11 @@ public class CartResource {
                 .build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                .entity("Book not found: " + e.getMessage())
+                .entity("[MESSAGE] Book not found: " + e.getMessage())
                 .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("Error removing book from cart: " + e.getMessage())
+                .entity("[MESSAGE] Error removing book from cart: " + e.getMessage())
                 .build();
         }
     }

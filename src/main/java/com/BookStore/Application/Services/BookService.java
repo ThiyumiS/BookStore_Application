@@ -4,6 +4,7 @@ import com.BookStore.Application.Model.Book;
 import com.BookStore.Application.Storage.Storage;
 import com.BookStore.Application.Exceptions.BookNotFoundException;
 import java.util.List;
+import java.util.ArrayList;
 
 public class BookService {
     
@@ -11,7 +12,7 @@ public class BookService {
      * Get all books from the storage
      */
     public List<Book> getAllBooks() {
-        return (List<Book>) Storage.getBooks().values();
+        return new ArrayList<>(Storage.getBooks().values());
     }
     
     /**
@@ -91,6 +92,6 @@ public class BookService {
      */
     public void deleteBook(int id) {
         Book book = getBookById(id); // Throws if not found
-        Storage.getBooks().remove(book);
+        Storage.getBooks().remove(id);
     }
 }

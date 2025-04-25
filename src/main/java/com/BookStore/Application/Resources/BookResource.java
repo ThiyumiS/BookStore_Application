@@ -39,7 +39,7 @@ public class BookResource {
             return Response.ok(book).build();
         } catch (BookNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                   .entity("Book not found with ID: " + id)
+                   .entity("[MESSAGE] Book not found with ID: " + id)
                    .build();
         }
     }
@@ -77,7 +77,7 @@ public class BookResource {
             return Response.ok(updatedBook).build();
         } catch (BookNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                   .entity("Book not found with ID: " + id)
+                   .entity("[MESSAGE] Book not found with ID: " + id)
                    .build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -99,7 +99,7 @@ public class BookResource {
             return Response.status(Response.Status.NO_CONTENT).build();
         } catch (BookNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                   .entity("Book not found with ID: " + id)
+                   .entity("[MESSAGE] Book not found with ID: " + id)
                    .build();
         }
     }

@@ -1,6 +1,7 @@
 package com.BookStore.Application.Resources;
 
 
+import com.BookStore.Application.Model.Book;
 import com.BookStore.Application.Storage.Storage;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -11,28 +12,31 @@ import com.BookStore.Application.Exceptions.CartNotFoundException;
 import com.BookStore.Application.Services.CartService;
 import com.BookStore.Application.Model.CartItem;
 
+import java.util.List;
+
 @Path("/customers/{customerId}/cart")
 public class CartResource {
 
 
     private CartService cartService = new CartService();
 
-
     /**
-     * Get the cart for a specific customer
+     * Get all items in the cart for a specific customer
      * @param customerId The ID of the customer
-     * @return Response with the customer's cart
+     * @return Response with all the customer's cart items
      */
     @GET
+    @Path("/items")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCart(@PathParam("customerId") Long customerId) {
+    public Response getCartItems(@PathParam("customerId") Long customerId, Book book) {
         try {
-            // Get cart for the customer
-            Object cart = cartService.getCartForCustomer(customerId);
-            String customerFirstName = Storage.getCustomers().get(customerId.intValue()).getFirstName(); //Initialized the customerFirstName variable and assign it to customerId after turn the long val to int val
-            return Response.ok(cart)
-                    .entity("Cart retrieved successfully by CUSTOMER: "+ customerFirstName)
-                    .build();
+            // Get cart items for the customer
+
+            List<CartItem> cartItems = cartService.getCartItems(customerId );
+            String customerFirstName = Storage.getCustomers().get(customerId.intValue()).getFirstName();
+            return Response.status(Response.Status.CREATED).entity(cartItems).build();
+                   // .entity("Cart items retrieved successfully for CUSTOMER: " + customerFirstName + book)
+                    //.build();
 
         } catch (CartNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -40,7 +44,7 @@ public class CartResource {
                 .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("Error retrieving cart: " + e.getMessage())
+                .entity("Error retrieving cart items: " + e.getMessage())
                 .build();
         }
     }
@@ -123,3 +127,4 @@ public class CartResource {
         }
     }
 }
+

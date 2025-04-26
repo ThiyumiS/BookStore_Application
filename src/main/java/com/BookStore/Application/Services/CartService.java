@@ -13,8 +13,8 @@ public class CartService {
     
     /**
      * Get the cart for a specific customer
-     */
-    public List<CartItem> getCartForCustomer(Long customerId) {
+
+    public List<CartItem> getCartItems (Long customerId) {
         List<CartItem> cart = Storage.getCarts().get(customerId.intValue());
         if (cart == null) {
             // Initialize an empty cart for new customers
@@ -22,31 +22,42 @@ public class CartService {
             Storage.getCarts().put(customerId.intValue(), cart);
         }
         return cart;
+    }\
+     */
+
+    public List<CartItem> getCartItems(Long customerId) {
+        List<CartItem> cart = Storage.getCarts().get(customerId.intValue());
+        if (cart == null) {
+            throw new CartNotFoundException("Cart for customer ID " + customerId + " not found.");
+        }
+        return cart;
     }
-    
+
+
+
     /**
      * Add a book to the customer's cart
-     */
+
     public void addBookToCart(Long customerId, CartItem newItem) {
         // Validate the book exists
         int bookId = newItem.getBookId();
         if (!Storage.getBooks().containsKey(bookId)) {
             throw new IllegalArgumentException("Book does not exist");
         }
-        
+
         // Ensure the Book object is set in the CartItem
         if (newItem.getBook() == null) {
             Book book = Storage.getBooks().get(bookId);
             newItem.setBook(book);
         }
-        
+
         // Check if cart exists for customer
         if (!Storage.getCarts().containsKey(customerId.intValue())) {
             throw new CartNotFoundException(customerId);
         }
-        
-        List<CartItem> cart = getCartForCustomer(customerId);
-        
+
+        List<CartItem> cart = getCartItems(customerId);
+
         // Check if the book is already in the cart
         boolean bookFound = false;
         for (CartItem item : cart) {
@@ -59,16 +70,58 @@ public class CartService {
                 break;
             }
         }
-        
+
         // If book not found, add it to cart
         if (!bookFound) {
             cart.add(newItem);
         }
-        
+
         // Update the cart in storage
         Storage.getCarts().put(customerId.intValue(), cart);
     }
-    
+     */
+
+    public void addBookToCart(Long customerId, CartItem newItem) {
+        // Validate the book exists
+        int bookId = newItem.getBookId();
+        if (!Storage.getBooks().containsKey(bookId)) {
+            throw new IllegalArgumentException("Book does not exist");
+        }
+
+        // Ensure the Book object is set in the CartItem
+        if (newItem.getBook() == null) {
+            Book book = Storage.getBooks().get(bookId);
+            newItem.setBook(book);
+        }
+
+        // Check if cart exists for customer; if not, create it automatically
+        List<CartItem> cart = Storage.getCarts().get(customerId.intValue());
+        if (cart == null) {
+            cart = new ArrayList<>();
+            Storage.getCarts().put(customerId.intValue(), cart);
+        }
+
+        // Check if the book is already in the cart
+        boolean bookFound = false;
+        for (CartItem item : cart) {
+            if (item.getBookId() == newItem.getBookId()) {
+                int newQuantity = item.getQuantity() + newItem.getQuantity();
+                item.setQuantity(newQuantity);
+                bookFound = true;
+                break;
+            }
+        }
+
+        // If book not found, add it to cart
+        if (!bookFound) {
+            cart.add(newItem);
+        }
+
+        // No need to put again in storage — because 'cart' is a reference to the stored list
+
+    }
+
+
     /**
      * Update the quantity of a book in the customer's cart
      */
@@ -78,7 +131,7 @@ public class CartService {
             throw new CartNotFoundException(customerId);
         }
         
-        List<CartItem> cart = getCartForCustomer(customerId);
+        List<CartItem> cart = getCartItems(customerId);
         boolean bookFound = false;
         
         for (CartItem item : cart) {
@@ -109,7 +162,7 @@ public class CartService {
             throw new CartNotFoundException(customerId);
         }
         
-        List<CartItem> cart = getCartForCustomer(customerId);
+        List<CartItem> cart =getCartItems(customerId);
         
         // Find and remove the item
         boolean removed = cart.removeIf(item -> item.getBook().getId() == bookId );
@@ -131,7 +184,7 @@ public class CartService {
             throw new CartNotFoundException(customerId);
         }
         
-        List<CartItem> cart = getCartForCustomer(customerId);
+        List<CartItem> cart = getCartItems(customerId);
         double total = 0;
         
         for (CartItem item : cart) {

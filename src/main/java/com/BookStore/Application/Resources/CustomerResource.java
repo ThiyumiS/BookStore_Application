@@ -4,7 +4,7 @@ import com.BookStore.Application.Exceptions.CustomerNotFoundException;
 import com.BookStore.Application.Model.Customer;
 import com.BookStore.Application.Services.CustomerService;
 
-import jakarta.inject.Inject;
+//import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -13,8 +13,10 @@ import java.util.List;
 @Path("/customers")
 public class CustomerResource {
     
-    @Inject
-    private CustomerService customerService;
+    //@Inject
+    //private CustomerService customerService;
+    // In CustomerResource.java
+    private CustomerService customerService = new CustomerService();
     
     /**
      * Get all customers

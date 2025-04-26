@@ -29,9 +29,15 @@ public class CartService {
      */
     public void addBookToCart(Long customerId, CartItem newItem) {
         // Validate the book exists
-        Book book = newItem.getBook();
-        if (book == null || Storage.getBooks().get(book.getId()) == null) { // took out intValue()
+        int bookId = newItem.getBookId();
+        if (!Storage.getBooks().containsKey(bookId)) {
             throw new IllegalArgumentException("Book does not exist");
+        }
+        
+        // Ensure the Book object is set in the CartItem
+        if (newItem.getBook() == null) {
+            Book book = Storage.getBooks().get(bookId);
+            newItem.setBook(book);
         }
         
         // Check if cart exists for customer
@@ -44,7 +50,8 @@ public class CartService {
         // Check if the book is already in the cart
         boolean bookFound = false;
         for (CartItem item : cart) {
-            if (item.getBook().getId()== newItem.getBook().getId()) { //changed .equal to == for Long comparison
+            // Compare by bookId instead of using Book objects which might be null
+            if (item.getBookId() == newItem.getBookId()) {
                 // Book already exists, increase quantity
                 int newQuantity = item.getQuantity() + newItem.getQuantity();
                 item.setQuantity(newQuantity);

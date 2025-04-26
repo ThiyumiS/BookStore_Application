@@ -14,15 +14,6 @@ public class CartService {
     /**
      * Get the cart for a specific customer
 
-    public List<CartItem> getCartItems (Long customerId) {
-        List<CartItem> cart = Storage.getCarts().get(customerId.intValue());
-        if (cart == null) {
-            // Initialize an empty cart for new customers
-            cart = new ArrayList<>();
-            Storage.getCarts().put(customerId.intValue(), cart);
-        }
-        return cart;
-    }\
      */
 
     public List<CartItem> getCartItems(Long customerId) {
@@ -34,67 +25,26 @@ public class CartService {
     }
 
 
-
-    /**
-     * Add a book to the customer's cart
-
     public void addBookToCart(Long customerId, CartItem newItem) {
-        // Validate the book exists
         int bookId = newItem.getBookId();
+
+        // Check if the book exists
         if (!Storage.getBooks().containsKey(bookId)) {
-            throw new IllegalArgumentException("Book does not exist");
+            throw new IllegalArgumentException("Book does not exist.");
         }
 
-        // Ensure the Book object is set in the CartItem
-        if (newItem.getBook() == null) {
-            Book book = Storage.getBooks().get(bookId);
-            newItem.setBook(book);
+        // Get the actual Book object
+        Book book = Storage.getBooks().get(bookId);
+        newItem.setBook(book); // Set the Book inside CartItem
+
+        // 🛑 Check if the requested quantity exceeds available stock
+        if (newItem.getQuantity() > book.getQuantityInStock()) {
+            throw new IllegalArgumentException(
+                    "Only " + book.getQuantityInStock() + " items available in stock. You requested " + newItem.getQuantity() + "."
+            );
         }
 
-        // Check if cart exists for customer
-        if (!Storage.getCarts().containsKey(customerId.intValue())) {
-            throw new CartNotFoundException(customerId);
-        }
-
-        List<CartItem> cart = getCartItems(customerId);
-
-        // Check if the book is already in the cart
-        boolean bookFound = false;
-        for (CartItem item : cart) {
-            // Compare by bookId instead of using Book objects which might be null
-            if (item.getBookId() == newItem.getBookId()) {
-                // Book already exists, increase quantity
-                int newQuantity = item.getQuantity() + newItem.getQuantity();
-                item.setQuantity(newQuantity);
-                bookFound = true;
-                break;
-            }
-        }
-
-        // If book not found, add it to cart
-        if (!bookFound) {
-            cart.add(newItem);
-        }
-
-        // Update the cart in storage
-        Storage.getCarts().put(customerId.intValue(), cart);
-    }
-     */
-
-    public void addBookToCart(Long customerId, CartItem newItem) {
-        // Validate the book exists
-        int bookId = newItem.getBookId();
-        if (!Storage.getBooks().containsKey(bookId)) {
-            throw new IllegalArgumentException("Book does not exist");
-        }
-
-        // Ensure the Book object is set in the CartItem
-        if (newItem.getBook() == null) {
-            Book book = Storage.getBooks().get(bookId);
-            newItem.setBook(book);
-        }
-
-        // Check if cart exists for customer; if not, create it automatically
+        // Get or create the customer's cart
         List<CartItem> cart = Storage.getCarts().get(customerId.intValue());
         if (cart == null) {
             cart = new ArrayList<>();
@@ -106,19 +56,24 @@ public class CartService {
         for (CartItem item : cart) {
             if (item.getBookId() == newItem.getBookId()) {
                 int newQuantity = item.getQuantity() + newItem.getQuantity();
+
+                // 🛑 Check if combined quantity exceeds stock
+                if (newQuantity > book.getQuantityInStock()) {
+                    throw new IllegalArgumentException(
+                            "Only " + book.getQuantityInStock() + " items available. Cannot update to " + newQuantity + "."
+                    );
+                }
+
                 item.setQuantity(newQuantity);
                 bookFound = true;
                 break;
             }
         }
 
-        // If book not found, add it to cart
+        // If the book is not already in the cart, add it
         if (!bookFound) {
             cart.add(newItem);
         }
-
-        // No need to put again in storage — because 'cart' is a reference to the stored list
-
     }
 
 

@@ -111,7 +111,9 @@ public class CartResource {
             @PathParam("bookId") Long bookId) {
         try {
             cartService.removeBookFromCart(customerId, bookId);
-            return Response.status(Response.Status.NO_CONTENT).build();
+            return Response.status(Response.Status.NO_CONTENT)
+                    .entity("The book removed from cart successfully")
+                    .build();
         } catch (CartNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                 .entity(e.getMessage())

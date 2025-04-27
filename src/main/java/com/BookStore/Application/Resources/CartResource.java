@@ -3,9 +3,9 @@ package com.BookStore.Application.Resources;
 import com.BookStore.Application.Services.CartService;
 import com.BookStore.Application.Model.CartItem;
 
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/customers/{customerId}/cart")

@@ -5,6 +5,10 @@ public class OutOfStockException extends RuntimeException {
     private int requestedQuantity;
     private int availableQuantity;
 
+    public OutOfStockException(String message) {
+        super(message);
+    }
+
     public OutOfStockException(int bookId, int requestedQuantity, int availableQuantity) {
         super("Book with ID " + bookId + " has insufficient stock. Requested: " +
                 requestedQuantity + ", Available: " + availableQuantity);

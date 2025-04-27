@@ -2,8 +2,8 @@ package com.BookStore.Application.Services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import com.BookStore.Application.Exceptions.BookNotFoundException;
 import com.BookStore.Application.Exceptions.CartNotFoundException;
 import com.BookStore.Application.Model.Book;
 import com.BookStore.Application.Model.CartItem;
@@ -26,20 +26,23 @@ public class CartService {
 
 
     public void addBookToCart(Long customerId, CartItem newItem) {
-        int bookId = newItem.getBookId();
-
-        // Check if the book exists
+        int bookId = newItem.getBookId();        // Check if the book exists
         if (!Storage.getBooks().containsKey(bookId)) {
-            throw new IllegalArgumentException("Book does not exist.");
+            throw new com.BookStore.Application.Exceptions.BookNotFoundException("Book not found with ID: " + bookId);
         }
 
         // Get the actual Book object
         Book book = Storage.getBooks().get(bookId);
-        newItem.setBook(book); // Set the Book inside CartItem
-
+        newItem.setBook(book); // Set the Book inside CartItem        // Check if the quantity is valid
+        if (newItem.getQuantity() <= 0) {
+            throw new com.BookStore.Application.Exceptions.InvalidInputException(
+                    "Invalid quantity. Must be greater than zero."
+            );
+        }
+        
         //  Check if the requested quantity exceeds available stock
         if (newItem.getQuantity() > book.getQuantityInStock()) {
-            throw new IllegalArgumentException(
+            throw new com.BookStore.Application.Exceptions.OutOfStockException(
                     "Only " + book.getQuantityInStock() + " items available in stock. You requested " + newItem.getQuantity() + "."
             );
         }
@@ -55,11 +58,9 @@ public class CartService {
         boolean bookFound = false;
         for (CartItem item : cart) {
             if (item.getBookId() == newItem.getBookId()) {
-                int newQuantity = item.getQuantity() + newItem.getQuantity();
-
-                // Check if combined quantity exceeds stock
+                int newQuantity = item.getQuantity() + newItem.getQuantity();                // Check if combined quantity exceeds stock
                 if (newQuantity > book.getQuantityInStock()) {
-                    throw new IllegalArgumentException(
+                    throw new com.BookStore.Application.Exceptions.OutOfStockException(
                             "Only " + book.getQuantityInStock() + " items available. Cannot update to " + newQuantity + "."
                     );
                 }
@@ -79,11 +80,10 @@ public class CartService {
 
     /**
      * Update the quantity of a book in the customer's cart
-     */
-    public void updateBookQuantity(Long customerId, Long bookId, int newQuantity) {
+     */    public void updateBookQuantity(Long customerId, Long bookId, int newQuantity) {
         // Check if cart exists for customer
         if (!Storage.getCarts().containsKey(customerId.intValue())) {
-            throw new CartNotFoundException(customerId);
+            throw new CartNotFoundException("Cart not found for customer ID: " + customerId);
         }
         
         List<CartItem> cart = getCartItems(customerId);
@@ -102,16 +102,14 @@ public class CartService {
                 break;
             }
         }
-        
-        if (!bookFound) {
-            throw new IllegalArgumentException("Book not found in cart");
+          if (!bookFound) {
+            throw new BookNotFoundException("Book with ID " + bookId + " not found in cart");
         }
     }
     
     /**
      * Remove a book from the customer's cart
-     */
-    public void removeBookFromCart(Long customerId, Long bookId) {
+     */    public void removeBookFromCart(Long customerId, Long bookId) {
         // Check if cart exists for customer
         if (!Storage.getCarts().containsKey(customerId.intValue())) {
             throw new CartNotFoundException(customerId);
@@ -121,9 +119,8 @@ public class CartService {
         
         // Find and remove the item
         boolean removed = cart.removeIf(item -> item.getBook().getId() == bookId );
-        
-        if (!removed) {
-            throw new IllegalArgumentException("Book not found in cart");
+          if (!removed) {
+            throw new BookNotFoundException("Book with ID " + bookId + " not found in cart");
         }
         
         // Update the cart in storage

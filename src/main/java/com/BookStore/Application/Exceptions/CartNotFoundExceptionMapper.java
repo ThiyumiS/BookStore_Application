@@ -1,6 +1,8 @@
 package com.BookStore.Application.Exceptions;
 
 import com.BookStore.Application.Model.ErrorResponse;
+import com.BookStore.Application.Util.LoggerUtil;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -10,6 +12,9 @@ public class CartNotFoundExceptionMapper implements ExceptionMapper<CartNotFound
 
     @Override
     public Response toResponse(CartNotFoundException exception) {
+        // Log the exception
+        LoggerUtil.logWarning("Cart not found: " + exception.getMessage());
+        
         ErrorResponse error = new ErrorResponse(
                 "Not Found",
                 exception.getMessage(),
@@ -17,6 +22,7 @@ public class CartNotFoundExceptionMapper implements ExceptionMapper<CartNotFound
         );
         return Response.status(Response.Status.NOT_FOUND)
                 .entity(error)
+                .type(MediaType.APPLICATION_JSON)
                 .build();
     }
 }

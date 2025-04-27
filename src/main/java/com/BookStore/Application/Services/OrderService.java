@@ -1,5 +1,6 @@
 package com.BookStore.Application.Services;
 
+
 import com.BookStore.Application.Exceptions.OutOfStockException;
 import com.BookStore.Application.Model.Order;
 import com.BookStore.Application.Model.CartItem;
@@ -34,19 +35,17 @@ public class OrderService {
 
      */
 
-    public Order createOrderFromCart(int customerId) {
-        List<CartItem> cartItems = Storage.getCarts().get(customerId);
+    public Order createOrderFromCart(int customerId) {        List<CartItem> cartItems = Storage.getCarts().get(customerId);
         if (cartItems == null || cartItems.isEmpty()) {
-            throw new IllegalStateException("Cart is empty for customer ID: " + customerId);
+            throw new com.BookStore.Application.Exceptions.CartNotFoundException("Cart is empty for customer ID: " + customerId);
         }
 
         double totalPrice = 0.0;
 
         // Check stock availability first
-        for (CartItem item : cartItems) {
-            Book book = Storage.getBooks().get(item.getBookId());
+        for (CartItem item : cartItems) {            Book book = Storage.getBooks().get(item.getBookId());
             if (book == null) {
-                throw new IllegalArgumentException("Book with ID " + item.getBookId() + " does not exist.");
+                throw new com.BookStore.Application.Exceptions.BookNotFoundException("Book with ID " + item.getBookId() + " does not exist.");
             }
             if (item.getQuantity() > book.getQuantityInStock()) {
                 throw new OutOfStockException(book.getId(), item.getQuantity(), book.getQuantityInStock());

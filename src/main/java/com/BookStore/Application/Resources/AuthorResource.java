@@ -3,6 +3,7 @@ package com.BookStore.Application.Resources;
 import com.BookStore.Application.Model.Author;
 import com.BookStore.Application.Model.Book;
 import com.BookStore.Application.Services.AuthorService;
+import com.BookStore.Application.Exceptions.InvalidInputException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,40 +25,46 @@ public class AuthorResource {
     public Response getAllAuthors() {
         List<Author> authors = authorService.getAllAuthors();
         return Response.ok(authors).build();
-    }
-
-    @GET
+    }    @GET
     @Path("/{id}")
     public Response getAuthorById(@PathParam("id") int id) {
+        // AuthorService.getAuthorById throws AuthorNotFoundException if not found
         Author author = authorService.getAuthorById(id);
         return Response.ok(author).build();
-    }
-
-    @GET
+    }    @GET
     @Path("/{id}/books")
     public Response getBooksByAuthorId(@PathParam("id") int id) {
+        // AuthorService.getBooksByAuthorId throws AuthorNotFoundException if author not found
         List<Book> books = authorService.getBooksByAuthorId(id);
         return Response.ok(books).build();
-    }
-
-    @POST
+    }    @POST
     public Response createAuthor(Author author) {
+        // Validate required fields
+        if (author.getName() == null || author.getName().trim().isEmpty() || 
+            author.getBiography() == null || author.getBiography().trim().isEmpty()) {
+            throw new InvalidInputException("Author name and biography are required");
+        }
+        
         Author createdAuthor = authorService.createAuthor(author);
         return Response.status(Response.Status.CREATED)
                 .entity(createdAuthor)
                 .build();
-    }
-
-    @PUT
+    }    @PUT
     @Path("/{id}")
     public Response updateAuthor(@PathParam("id") int id, Author author) {
+        // Validate required fields
+        if (author.getName() == null || author.getName().trim().isEmpty() || 
+            author.getBiography() == null || author.getBiography().trim().isEmpty()) {
+            throw new InvalidInputException("Author name and biography are required");
+        }
+        
+        // AuthorService.updateAuthor throws AuthorNotFoundException if author not found
         Author updatedAuthor = authorService.updateAuthor(id, author);
         return Response.ok(updatedAuthor).build();
-    }
-
-    @DELETE
+    }    @DELETE
     @Path("/{id}")
     public Response deleteAuthor(@PathParam("id") int id) {
+        // AuthorService.deleteAuthor throws AuthorNotFoundException if author not found
         authorService.deleteAuthor(id);
         return Response.noContent().build();
     }

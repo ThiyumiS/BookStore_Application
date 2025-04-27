@@ -3,6 +3,7 @@ package com.BookStore.Application.Services;
 import com.BookStore.Application.Model.Book;
 import com.BookStore.Application.Storage.Storage;
 import com.BookStore.Application.Exceptions.BookNotFoundException;
+import com.BookStore.Application.Exceptions.AuthorNotFoundException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -27,11 +28,11 @@ public class BookService {
                 .findFirst()
                 .orElseThrow(() -> new BookNotFoundException("Book not found with ID: " + id));
     }
-    
-    /**
+      /**
      * Create a new book after validating the author exists
      * @param book The book to create
      * @return The created book with generated ID
+     * @throws AuthorNotFoundException if the author does not exist
      */
     public Book createBook(Book book) {
         // Validate author exists
@@ -39,7 +40,7 @@ public class BookService {
                 .anyMatch(author -> author.getId() == book.getAuthorId());
         
         if (!authorExists) {
-            throw new IllegalArgumentException("Author with ID " + book.getAuthorId() + " does not exist");
+            throw new com.BookStore.Application.Exceptions.AuthorNotFoundException("Author with ID " + book.getAuthorId() + " does not exist");
         }
         
         // Generate new ID (max ID + 1 or 1 if empty)
@@ -62,36 +63,32 @@ public class BookService {
      */
     public Book updateBook(int id, Book updatedBook) {
         Book existingBook = getBookById(id); // Throws if not found
-        
-        // Validate author exists if being changed
+          // Validate author exists if being changed
         if (updatedBook.getAuthorId() != existingBook.getAuthorId()) {
             // Check if the new author ID exists
             boolean authorExists = Storage.getAuthors().values().stream()
                     .anyMatch(author -> author.getId() == updatedBook.getAuthorId());
-
             
             if (!authorExists) {
-                throw new IllegalArgumentException("Author with ID " + updatedBook.getAuthorId() + " does not exist");
+                throw new com.BookStore.Application.Exceptions.AuthorNotFoundException("Author with ID " + updatedBook.getAuthorId() + " does not exist");
             }
         }
         
         // Preserve the ID
         updatedBook.setId(id);
-        
-        // Replace in storage
-        Book book = Storage.getBooks().get(id); //I dont know if this correct
+          // Replace in storage
         Storage.getBooks().put(id, updatedBook);
 
         return updatedBook;
     }
-    
-    /**
+      /**
      * Delete a book by ID
      * @param id The ID of the book to delete
      * @throws BookNotFoundException If no book with the given ID exists
      */
     public void deleteBook(int id) {
-        Book book = getBookById(id); // Throws if not found
+        // Just call getBookById to verify the book exists (throws exception if not)
+        getBookById(id);
         Storage.getBooks().remove(id);
     }
 }

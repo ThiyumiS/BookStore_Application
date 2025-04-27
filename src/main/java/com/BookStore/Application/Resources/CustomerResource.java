@@ -19,11 +19,10 @@ public class CustomerResource {
     public Response getAllCustomers() {
         List<Customer> customers = customerService.getAllCustomers();
         return Response.ok(customers).build();
-    }
-
-    @GET
+    }    @GET
     @Path("/{id}")
     public Response getCustomerById(@PathParam("id") int id) {
+        // CustomerService.getCustomerById throws CustomerNotFoundException if not found
         Customer customer = customerService.getCustomerById(id);
         return Response.ok(customer).build();
     }

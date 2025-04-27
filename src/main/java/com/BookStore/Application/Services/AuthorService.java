@@ -9,21 +9,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing Author operations such as create, retrieve, update, and delete.
+ */
 public class AuthorService {
-    
+
     /**
-     * Returns a list of all authors
+     * Retrieve all authors from storage.
      * @return List of all authors
      */
     public List<Author> getAllAuthors() {
         return new ArrayList<>(Storage.getAuthors().values());
     }
-    
+
     /**
-     * Returns an author by their ID
+     * Retrieve an author by their ID.
      * @param id Author ID
-     * @return Author object
-     * @throws AuthorNotFoundException if author with given ID does not exist
+     * @return Author object if found
+     * @throws AuthorNotFoundException if author does not exist
      */
     public Author getAuthorById(int id) {
         if (!Storage.getAuthors().containsKey(id)) {
@@ -33,55 +36,55 @@ public class AuthorService {
     }
 
     /**
-     * Get all books written by a specific author
-     * @param authorId The ID of the author
-     * @return List of books by the author
-     * @throws AuthorNotFoundException if author doesn't exist
+     * Retrieve all books written by a specific author.
+     * @param authorId Author's ID
+     * @return List of books associated with the author
+     * @throws AuthorNotFoundException if author does not exist
      */
     public List<Book> getBooksByAuthorId(int authorId) {
-        // First verify author exists
+        // Validate author existence
         if (!Storage.getAuthors().containsKey(authorId)) {
             throw new AuthorNotFoundException("Author not found with ID: " + authorId);
         }
 
-        // Return all books that have this author ID
+        // Filter and return books by authorId
         return Storage.getBooks().values().stream()
                 .filter(book -> book.getAuthorId() == authorId)
                 .collect(Collectors.toList());
     }
-    
+
     /**
-     * Creates a new author with auto-generated ID
-     * @param author Author object to create
+     * Create a new author with a generated ID.
+     * @param author Author object to be created
      * @return Created author with assigned ID
      */
     public Author createAuthor(Author author) {
-        int newId = Storage. generateAuthorId();
+        int newId = Storage.generateAuthorId();
         author.setId(newId);
         Storage.getAuthors().put(newId, author);
         return author;
     }
-    
+
     /**
-     * Updates an existing author
-     * @param id Author ID to update
-     * @param updatedAuthor Updated author details
+     * Update an existing author's details.
+     * @param id ID of the author to update
+     * @param updatedAuthor Updated author object
      * @return Updated author object
-     * @throws AuthorNotFoundException if author with given ID does not exist
+     * @throws AuthorNotFoundException if author does not exist
      */
     public Author updateAuthor(int id, Author updatedAuthor) {
         if (!Storage.getAuthors().containsKey(id)) {
             throw new AuthorNotFoundException("Cannot update author. Author not found with ID: " + id);
         }
-        updatedAuthor.setId(id);
+        updatedAuthor.setId(id); // Preserve the ID
         Storage.getAuthors().put(id, updatedAuthor);
         return updatedAuthor;
     }
-    
+
     /**
-     * Deletes an author by ID
-     * @param id Author ID to delete
-     * @throws AuthorNotFoundException if author with given ID does not exist
+     * Delete an author by their ID.
+     * @param id ID of the author to delete
+     * @throws AuthorNotFoundException if author does not exist
      */
     public void deleteAuthor(int id) {
         if (!Storage.getAuthors().containsKey(id)) {

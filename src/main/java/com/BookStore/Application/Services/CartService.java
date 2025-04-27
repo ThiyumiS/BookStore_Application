@@ -37,7 +37,7 @@ public class CartService {
         Book book = Storage.getBooks().get(bookId);
         newItem.setBook(book); // Set the Book inside CartItem
 
-        // 🛑 Check if the requested quantity exceeds available stock
+        //  Check if the requested quantity exceeds available stock
         if (newItem.getQuantity() > book.getQuantityInStock()) {
             throw new IllegalArgumentException(
                     "Only " + book.getQuantityInStock() + " items available in stock. You requested " + newItem.getQuantity() + "."
@@ -57,7 +57,7 @@ public class CartService {
             if (item.getBookId() == newItem.getBookId()) {
                 int newQuantity = item.getQuantity() + newItem.getQuantity();
 
-                // 🛑 Check if combined quantity exceeds stock
+                // Check if combined quantity exceeds stock
                 if (newQuantity > book.getQuantityInStock()) {
                     throw new IllegalArgumentException(
                             "Only " + book.getQuantityInStock() + " items available. Cannot update to " + newQuantity + "."

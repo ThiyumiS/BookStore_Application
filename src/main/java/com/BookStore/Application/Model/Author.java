@@ -29,56 +29,27 @@ public class Author {
         this.biography = biography;
     }
     
-    /**
-     * Gets the author's ID
-     * 
-     * @return The author's ID
-     */
+
     public int getId() {
         return id;
     }
-    
-    /**
-     * Sets the author's ID
-     * 
-     * @param id The author's ID to set
-     */
+
     public void setId(int id) {
         this.id = id;
     }
-    
-    /**
-     * Gets the author's name
-     * 
-     * @return The author's name
-     */
+
     public String getName() {
         return name;
     }
-    
-    /**
-     * Sets the author's name
-     * 
-     * @param name The author's name to set
-     */
+
     public void setName(String name) {
         this.name = name;
     }
-    
-    /**
-     * Gets the author's biography
-     * 
-     * @return The author's biography
-     */
+
     public String getBiography() {
         return biography;
     }
-    
-    /**
-     * Sets the author's biography
-     * 
-     * @param biography The author's biography to set
-     */
+
     public void setBiography(String biography) {
         this.biography = biography;
     }

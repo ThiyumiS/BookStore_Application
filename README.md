@@ -22,7 +22,7 @@ A RESTful API for a Bookstore application built with Java and JAX-RS. Supports C
 ## 🧰 Tech Stack
 
 - **Java 11+**
-- **JAX-RS (Jersey or RESTEasy)**
+- **JAX-RS (Jersey)**
 - **JSON** for request/response
 - **Postman** for testing
 - **Maven** (if applicable)
